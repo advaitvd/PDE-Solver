@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <cmath>
+#include <assert.h>
 using namespace std;
 
 template<class T>
@@ -17,12 +18,17 @@ public:
     void set_element(T,int,int);
     T get_element(int,int);
     void round_zeros();
+    
+    Matrix<T> inverse();
+    Matrix<T> transpose();
+    
     Matrix<T> operator+(Matrix<T>);
     Matrix<T> operator-(Matrix<T>);
     Matrix<T> operator*(Matrix<T>);
     Matrix<T> operator+(T);
     Matrix<T> operator-(T);
     Matrix<T> operator*(T);
+    Matrix<T> operator/(T);
     Matrix<T>& operator=(const Matrix<T>&);
     
     template<class U>
@@ -58,6 +64,56 @@ template<class T>
 int Matrix<T>::get_ncols(){
 	return num_cols;
 }
+
+template<class T>
+Matrix<T> Matrix<T>::transpose(){
+	int n=this->num_rows;
+	int m=this->num_cols;
+	Matrix<T> trans(m,n);
+	for(int i=0;i<n;i++){
+		for(int j=0;j<m;j++){
+			trans.set_element(this->M[i][j],j,i);
+		}
+	}
+	return trans;
+}
+
+template<class T>
+Matrix<T> Matrix<T>::inverse(){
+	int n=this->num_rows,m=this->num_cols;
+	assert(n==m);
+	Matrix<T> inv(n,m);
+	for(int i=0;i<n;i++){
+		for(int j=0;j<m;j++){
+			if(i==j){
+				inv.set_element(1.0,i,j);
+			}else{
+				inv.set_element(0.0,i,j);
+			}
+		}
+	}
+	for(int i=0;i<n;i++){
+		assert(fabs(this->M[i][i])>1e-7);
+		if(fabs(this->M[i][i]-1.0)>1e-7){
+			T temp=this->M[i][i];
+			for(int j=0;j<n;j++){
+				this->M[i][j]/=temp;
+				inv.set_element(inv.get_element(i,j)/temp,i,j);
+			}
+		}
+		for(int j=0;j<n;j++){
+			if(i!=j && fabs(this->M[j][i])>1e-7){
+				T temp=this->M[j][i];
+				for(int k=0;k<n;k++){
+					this->M[j][k]-=temp*this->M[i][k];
+					inv.set_element(inv.get_element(j,k)-temp*inv.get_element(i,k),j,k);
+				}
+			}
+		}
+	}
+	return inv;
+}
+
 
 template<class T>
 void Matrix<T>::round_zeros(){
@@ -104,6 +160,17 @@ Matrix<T> Matrix<T>::operator+(Matrix<T> mat){
 		}
 		return res;
 	}
+}
+
+template<class T>
+Matrix<T> Matrix<T>::operator/(T val){
+	assert(fabs(val)>1e-7);
+	for(int i=0;i<this->num_rows;i++){
+		for(int j=0;j<this->num_cols;j++){
+			this->M[i][j]=this->M[i][j]/val;
+		}
+	}
+	return *this;
 }
 
 template<class T>

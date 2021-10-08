@@ -54,8 +54,8 @@ int main(){
 	cin>>a>>b>>c>>d>>f1>>f2>>g1>>g2;
 	string A,B,C,D,E;
 	cin>>A>>B>>C>>D>>E;
-	int Nx=15;
-	int Ny=15;
+	int Nx=20;
+	int Ny=20;
 	double initial_guess=0.1;
 	string non_linear_solver="Newton";
 	string linear_solver="Gauss_Seidal";
@@ -70,6 +70,19 @@ int main(){
 	ofstream fout("output.txt");
 	fout<<temp;
 	fout.close();
+
+//	Matrix<double> M(3,3);
+//	M.set_element(0.2074,0,0);
+//	M.set_element(-0.0105,0,1);
+//	M.set_element(-0.00486,0,2);
+//	M.set_element(-0.05672,1,0);
+//	M.set_element(0.06928,1,1);
+//	M.set_element(-0.00648,1,2);
+//	M.set_element(0.0389,2,0);
+//	M.set_element(-0.03322,2,1);
+//	M.set_element(0.0616,2,2);
+//	Matrix<double> res=M.inverse();
+//	cout<<res;
 
 //The following is the matlab  code for plotting  of the result
 /*
